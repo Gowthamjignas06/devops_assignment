@@ -1,0 +1,4 @@
+flask==2.1.2
+# Flask 2.1.x imports werkzeug.urls.url_quote, removed in Werkzeug 3.0.
+# Without this pin, `import flask` fails with ImportError.
+Werkzeug==2.1.2
