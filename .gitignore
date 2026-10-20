@@ -1,0 +1,25 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Secrets: keep real values in .env (see .env.example), never in git
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Files the exercises generate at runtime
+python-app-deploy/
+*.log
+*.pid
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

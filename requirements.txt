@@ -1,0 +1,16 @@
+# Python packages for running exercise scripts on your own machine (inside .venv).
+# Install with: setup/setup-python-venv.sh   (or: pip install -r requirements.txt)
+#
+# Container images do NOT use this file; each exercise folder pins its own.
+
+# Same versions as Exercise 9, so test_app.py behaves the same locally and in Jenkins.
+# Flask 2.x imports werkzeug.urls.url_quote, which Werkzeug 3.0 removed, so an
+# unpinned Werkzeug makes `import flask` fail with ImportError.
+Flask==2.1.2
+Werkzeug==2.1.2
+
+# Exercise 6: exposes delivery metrics on :8000/metrics
+prometheus-client==0.26.0
+
+# Exercise 5: Docker SDK used by apply_apparmor.py / test_restricted_actions.py
+docker==7.2.0
