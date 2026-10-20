@@ -1,0 +1,43 @@
+#include <tunables/global>
+
+# Install to /etc/apparmor.d/my-apparmor-profile and load with:
+#   sudo apparmor_parser -r /etc/apparmor.d/my-apparmor-profile
+#
+# Docker selects a profile by its NAME (--security-opt apparmor=my-apparmor-profile),
+# so the profile must be declared as "profile my-apparmor-profile". The original
+# declared "/usr/bin/python3 { ... }", which Docker can't find by that name.
+profile my-apparmor-profile flags=(attach_disconnected,mediate_deleted) {
+    #include <abstractions/base>
+
+    # AppArmor denies anything not allowed. The original only allowed /app/**,
+    # so the container couldn't even load Python. Allow file access in general;
+    # the deny rules below still win over this.
+    file,
+
+    # Let Docker stop the container (docker stop sends signals from outside).
+    signal (receive) peer=unconfined,
+    signal (send,receive) peer=my-apparmor-profile,
+
+    # Allow Flask app to bind to port 5000 (TCP). Werkzeug also opens a UDP
+    # socket at startup to print the container's IP address.
+    network inet stream,
+    network inet6 stream,
+    network inet dgram,
+    network inet6 dgram,
+
+    # Permissions to the application directory
+    /app/** rwk,
+
+    # Deny access to sensitive system files
+    deny /etc/** r,
+    deny /var/** rw,
+
+    # Deny execution of any binaries in /bin or /usr/bin
+    # (the original had "rmix"; AppArmor rejects the "i" qualifier in deny rules)
+    deny /bin/** rmx,
+    deny /usr/bin/** rmx,
+
+    # Capability restrictions
+    capability net_bind_service,
+    deny capability sys_admin,
+}
