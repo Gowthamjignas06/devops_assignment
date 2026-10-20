@@ -1,0 +1,5 @@
+Flask==2.0.1
+# Flask 2.0.x imports werkzeug.urls.url_quote, removed in Werkzeug 3.0, and its
+# test client breaks on Werkzeug >= 2.1. Without this pin the container exits
+# immediately with: ImportError: cannot import name 'url_quote'
+Werkzeug==2.0.3
