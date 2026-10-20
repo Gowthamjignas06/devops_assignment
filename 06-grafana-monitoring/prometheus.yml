@@ -1,0 +1,15 @@
+scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  - job_name: "delivery_service"
+    static_configs:
+      # host.docker.internal = your machine, as seen from inside the Prometheus
+      # container. Works on macOS, WSL2 and native Linux because Prometheus is
+      # started with --add-host=host.docker.internal:host-gateway.
+      # (The original hard-codes 172.17.0.1, which only works on native Linux.)
+      - targets: ["host.docker.internal:8000"]
+
+rule_files:
+  - /etc/prometheus/alert_rules.yml

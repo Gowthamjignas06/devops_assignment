@@ -1,0 +1,86 @@
+pipeline {
+    agent any
+    environment {
+        PROMETHEUS_IMAGE = 'prom/prometheus:v3.13.4'
+        GRAFANA_IMAGE    = 'grafana/grafana:13.2.4'
+    }
+    stages {
+        stage('Pre-check Docker') {
+            steps {
+                script {
+                    try {
+                        // Check if Docker is installed
+                        def dockerVersion = sh(script: 'docker --version', returnStdout: true).trim()
+                        if (!dockerVersion) {
+                            error "Docker is not installed or not in the PATH. Please install Docker."
+                        }
+
+                        // Check if Docker daemon is running
+                        def dockerInfo = sh(script: 'docker info', returnStatus: true)
+                        if (dockerInfo != 0) {
+                            error "Docker daemon is not running. Please start the Docker service."
+                        }
+
+                        echo "Docker is available and running: ${dockerVersion}"
+                    } catch (Exception e) {
+                        error "Pre-check failed: ${e.message}"
+                    }
+                }
+            }
+        }
+        stage('Setup Workspace') {
+            steps {
+                script {
+                    // Define the local source path where the files are located.
+                    // jenkins/run-jenkins.sh mounts this repo read-only at /labs.
+                    def localSourcePath = '/labs/06-grafana-monitoring'
+                    def workspacePath = env.WORKSPACE
+
+                    // Copy necessary files into the Jenkins workspace
+                    sh """
+                    cp ${localSourcePath}/delivery_metrics.py ${workspacePath}/
+                    cp ${localSourcePath}/requirements.txt ${workspacePath}/
+                    cp ${localSourcePath}/Dockerfile ${workspacePath}/
+                    cp ${localSourcePath}/.dockerignore ${workspacePath}/
+                    cp ${localSourcePath}/prometheus.yml ${workspacePath}/
+                    cp ${localSourcePath}/alert_rules.yml ${workspacePath}/
+                    """
+                }
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t delivery_metrics .'
+            }
+        }
+        stage('Run Application') {
+            steps {
+                // Remove containers from a previous run (or from the manual steps)
+                // so the names and ports are free.
+                sh '''
+                docker rm -f delivery_metrics prometheus grafana 2>/dev/null || true
+                docker network create monitoring 2>/dev/null || true
+                docker run -d --name delivery_metrics --network monitoring -p 8000:8000 delivery_metrics
+                '''
+            }
+        }
+        stage('Run Prometheus & Grafana') {
+            steps {
+                // Jenkins talks to the host's Docker daemon, which can't see paths
+                // inside the Jenkins container, so `-v $WORKSPACE/...` bind mounts
+                // would be empty. Copy the config files in with `docker cp` instead.
+                // Prometheus runs as "nobody", so the files must be world-readable.
+                sh '''
+                chmod a+r prometheus.yml alert_rules.yml
+                docker create --name prometheus --network monitoring -p 9090:9090 \
+                  --add-host=host.docker.internal:host-gateway \
+                  $PROMETHEUS_IMAGE
+                docker cp prometheus.yml prometheus:/etc/prometheus/prometheus.yml
+                docker cp alert_rules.yml prometheus:/etc/prometheus/alert_rules.yml
+                docker start prometheus
+                docker run -d --name grafana --network monitoring -p 3000:3000 $GRAFANA_IMAGE
+                '''
+            }
+        }
+    }
+}
