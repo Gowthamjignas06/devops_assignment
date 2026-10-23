@@ -28,6 +28,12 @@ a **"Changes from the original"** list explaining every fix.
 "Screenshots" table in its README lists what to capture and the file names to
 use. Add them from your own runs as you complete each exercise.
 
+**Guided runs:** `./lab.sh <number>` (e.g. `./lab.sh 4`) walks you through an
+exercise. It runs the commands in order, clears the screen before each screenshot
+point, waits while you take the screenshot, then moves it into that exercise's
+`screenshots/` folder with the right name. `./lab.sh status` shows what's still
+missing.
+
 ### Recommended order
 
 Docker basics first, then Kubernetes, then CI/CD, then monitoring (which uses Jenkins):
