@@ -85,6 +85,24 @@ Capture these from **your own run** and save them in [`screenshots/`](screenshot
 | `screenshots/03-curl-fails.png` | Step 12: `curl http://127.0.0.1:15000` failing (expected) |
 | `screenshots/04-service-curl.png` | `minikube service flask-app-service --url` + `curl` returning "Hello from Flask on Kubernetes!" |
 
+### My run
+
+**Steps 1–4: Minikube started (Docker runtime) and image built inside it**
+
+![docker build](screenshots/01-docker-build.png)
+
+**Steps 5–10: Deployment rolled out, Pod Running, Flask listening on 15000**
+
+![Deployment and Pods](screenshots/02-deployment-pods.png)
+
+**Steps 11–12: no Service yet, so curl can't connect (expected)**
+
+![curl fails](screenshots/03-curl-fails.png)
+
+**Step 13: NodePort Service added, app reachable**
+
+![Service and curl](screenshots/04-service-curl.png)
+
 ## Changes from the original / gotchas
 
 - **`eval $(minikube docker-env)` needs the Docker runtime.** Recent Minikube
