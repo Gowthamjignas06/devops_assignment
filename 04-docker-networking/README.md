@@ -78,6 +78,24 @@ Capture these from **your own run** and save them in [`screenshots/`](screenshot
 | `screenshots/03-about-api.png` | `curl http://localhost:5001/about` JSON response |
 | `screenshots/04-ping.png` | `ping mysql` and `ping redis` from inside the flask container |
 
+### My run
+
+**Tasks 1–3: network created and inspected**
+
+![Network inspect](screenshots/01-network-inspect.png)
+
+**Task 4: MySQL, Redis and Flask running on `my-bridge-net`**
+
+![Containers running](screenshots/02-containers-running.png)
+
+**Flask API reachable from the host**
+
+![About API](screenshots/03-about-api.png)
+
+**Task 5: containers reach each other by name**
+
+![Ping mysql and redis](screenshots/04-ping.png)
+
 ## Changes from the original / gotchas
 
 - **MySQL exits immediately as written.** `mysql:latest` with no
