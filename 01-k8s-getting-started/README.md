@@ -62,6 +62,20 @@ Capture these from **your own run** and save them in [`screenshots/`](screenshot
 | `screenshots/02-pod-running.png` | `kubectl get pods` showing `hello-k8s` Running |
 | `screenshots/03-nginx-welcome.png` | Browser showing the nginx welcome page from `minikube service hello-k8s` |
 
+### My run
+
+**Step 1: Minikube cluster started**
+
+![minikube start](screenshots/01-minikube-start.png)
+
+**Steps 2–3: `hello-k8s` Pod created and Running**
+
+![Pod running](screenshots/02-pod-running.png)
+
+**Steps 4–5: Pod exposed as a NodePort Service, nginx welcome page in the browser**
+
+![nginx welcome page](screenshots/03-nginx-welcome.png)
+
 ## Changes from the original / gotchas
 
 - **Image pinned:** `nginx` (implicitly `:latest`) → `nginx:1.30` (current stable branch).
