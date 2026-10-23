@@ -66,6 +66,12 @@ Capture these from **your own run** and save them in [`screenshots/`](screenshot
 | `screenshots/01-jenkins-unlock.png` | The Unlock Jenkins page |
 | `screenshots/02-jenkins-dashboard.png` | Jenkins dashboard after setup, logged in as your admin user |
 
+### My run
+
+**Jenkins 2.580.1 set up and running**
+
+![Jenkins 2.580.1 set up and running](screenshots/02-jenkins-dashboard.png)
+
 ## Changes from the original / gotchas
 
 - `docker run ... jenkins/jenkins:lts` → `jenkins/run-jenkins.sh` (pinned

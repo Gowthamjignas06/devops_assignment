@@ -116,6 +116,20 @@ Capture these from **your own run** and save them in [`screenshots/`](screenshot
 | `screenshots/02-pods-wide.png` | `kubectl get pods -o wide` with replicas on different nodes |
 | `screenshots/03-curl-tests.png` | `curl` for `/products`, POST `/cart` and GET `/cart` |
 
+### My run
+
+**Steps 0–1: 3-node cluster `devops-multinode` started**
+
+![Steps 0–1: 3-node cluster `devops-multinode` started](screenshots/01-nodes.png)
+
+**Steps 4–8: images loaded, both apps deployed, replicas spread across nodes**
+
+![Steps 4–8: images loaded, both apps deployed, replicas spread across nodes](screenshots/02-pods-wide.png)
+
+**Steps 9–10: `/products` and `/cart` (GET, POST, GET) tested with curl**
+
+![Steps 9–10: `/products` and `/cart` (GET, POST, GET) tested with curl](screenshots/03-curl-tests.png)
+
 ## Changes from the original / gotchas
 
 - **Shopping Cart namespace:** `namespace: devops-exercise` was never created,

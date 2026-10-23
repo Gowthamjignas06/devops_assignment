@@ -100,6 +100,16 @@ Capture these from **your own run** and save them in [`screenshots/`](screenshot
 | `screenshots/02-job-config.png` | HelloWorld job config: Git URL, branch `*/main`, Execute shell step |
 | `screenshots/03-console-output.png` | Console Output showing `Hello, Jenkins!` and `Finished: SUCCESS` |
 
+### My run
+
+**`hello-world.sh` pushed to `devops-sample-code` on GitHub**
+
+![`hello-world.sh` pushed to `devops-sample-code` on GitHub](screenshots/01-github-repo.png)
+
+**`Helloworld` Freestyle job created in Jenkins**
+
+![`Helloworld` Freestyle job created in Jenkins](screenshots/02-job-config.png)
+
 ## Changes from the original / gotchas
 
 - **`git push -u origin main` fails as written.** `git init` creates a `master`

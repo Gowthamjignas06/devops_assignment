@@ -90,6 +90,24 @@ Capture these from **your own run** and save them in [`screenshots/`](screenshot
 | `screenshots/03-self-healing.png` | After deleting a Pod: still 5, one with a new name/low AGE |
 | `screenshots/04-load-distribution.png` | The `kubectl run load ...` output showing different `served_by_pod` values |
 
+### My run
+
+**Steps 3–6: ReplicaSet created, 3 Pods Running**
+
+![Steps 3–6: ReplicaSet created, 3 Pods Running](screenshots/01-replicaset-3-pods.png)
+
+**Steps 7–9: scaled to 5 replicas**
+
+![Steps 7–9: scaled to 5 replicas](screenshots/02-scaled-to-5.png)
+
+**Steps 10–11: deleted Pod replaced automatically**
+
+![Steps 10–11: deleted Pod replaced automatically](screenshots/03-self-healing.png)
+
+**Requests spread across Pods (`served_by_pod`)**
+
+![Requests spread across Pods (`served_by_pod`)](screenshots/04-load-distribution.png)
+
 ## Changes from the original / gotchas
 
 The original exercise doesn't work as written:

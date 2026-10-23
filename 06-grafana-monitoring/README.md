@@ -120,6 +120,24 @@ Capture these from **your own run** and save them in [`screenshots/`](screenshot
 | `screenshots/04-grafana-dashboard.png` | Grafana dashboard with the four panels |
 | `screenshots/05-jenkins-pipeline.png` | Jenkins pipeline run with all stages green |
 
+### My run
+
+**Step 1: delivery metrics exposed on `:8000/metrics`**
+
+![Step 1: delivery metrics exposed on `:8000/metrics`](screenshots/01-metrics-endpoint.png)
+
+**Prometheus Target health: `delivery_service` UP**
+
+![Prometheus Target health: `delivery_service` UP](screenshots/02-prometheus-targets.png)
+
+**Prometheus Alerts: `delivery_alerts` rules loaded from `alert_rules.yml`**
+
+![Prometheus Alerts: `delivery_alerts` rules loaded from `alert_rules.yml`](screenshots/03-prometheus-alerts.png)
+
+**Grafana running at `localhost:3000`**
+
+![Grafana running at `localhost:3000`](screenshots/04-grafana-dashboard.png)
+
 ## Changes from the original / gotchas
 
 - **Filename typos:** `prometheus.ym` → `prometheus.yml`; `alerts_rules.yml` → `alert_rules.yml`.
