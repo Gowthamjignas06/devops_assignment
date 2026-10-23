@@ -29,8 +29,8 @@ from outside yet, then adds a `NodePort` Service and reaches it through
 Run everything from this folder.
 
 ```bash
-# Step 1: start the cluster
-minikube start
+# Step 1: start the cluster (Docker runtime, so docker-env works)
+minikube start --container-runtime=docker
 
 # Step 4: point your docker CLI at Minikube's Docker daemon, then build there
 minikube docker-env              # just shows the variables that will be set
@@ -87,6 +87,12 @@ Capture these from **your own run** and save them in [`screenshots/`](screenshot
 
 ## Changes from the original / gotchas
 
+- **`eval $(minikube docker-env)` needs the Docker runtime.** Recent Minikube
+  clusters may run containerd, and then `docker build` fails with errors like
+  `failed to inspect pulled image moby/buildkit ... 404 page not found`. Start
+  with `--container-runtime=docker`. An existing cluster keeps its runtime, so
+  check with `minikube profile list`, and if it says `containerd`, run
+  `minikube delete` first. (`./lab.sh` does this check for you.)
 - **Base image:** `python:3.8-slim` (end-of-life) → `python:3.12-slim`.
 - **Pinned deps:** `pip install flask` → `requirements.txt` with
   `Flask==3.1.3` / `Werkzeug==3.1.9`. The Dockerfile copies only `app.py` and

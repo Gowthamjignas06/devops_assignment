@@ -32,7 +32,7 @@ Run everything from this folder.
 minikube stop; minikube delete
 
 # Step 2: single-node cluster
-minikube start --nodes=1
+minikube start --nodes=1 --container-runtime=docker
 kubectl get nodes
 
 # Build the image INSIDE Minikube, BEFORE applying the ReplicaSet
@@ -111,3 +111,9 @@ The original exercise doesn't work as written:
    load ...` command tests it from inside the cluster.
    `kubectl port-forward svc/flashsale-svc 8080:80` also works, but it always
    hits one Pod, so you won't see the distribution.
+8. **`eval $(minikube docker-env)` needs the Docker runtime.** Recent Minikube
+   clusters may run containerd, and then `docker build` fails with
+   `failed to inspect pulled image moby/buildkit ... 404 page not found`.
+   Start with `--container-runtime=docker`. An existing cluster keeps its
+   runtime, so if `minikube profile list` says `containerd`, run
+   `minikube delete` first. (`./lab.sh` does this check for you.)

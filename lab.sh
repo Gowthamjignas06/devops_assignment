@@ -229,6 +229,32 @@ service_url() { # var "profile args" service
   printf -v "$1" '%s' "$url"
 }
 
+# `eval $(minikube docker-env)` (Exercises 2 and 3) needs a cluster that runs Docker
+# inside. Newer Minikube versions can default to containerd, and an existing cluster
+# keeps its runtime, so check before starting and offer to recreate it.
+minikube_runtime() { # profile -> prints its container runtime, empty if no such profile
+  minikube profile list -o json 2>/dev/null | python3 -c '
+import sys, json
+for p in json.load(sys.stdin).get("valid") or []:
+    if p["Name"] == sys.argv[1]:
+        print(p["Config"]["KubernetesConfig"]["ContainerRuntime"])' "$1" 2>/dev/null
+}
+
+start_minikube_with_docker() { # extra start args
+  local rt
+  rt="$(minikube_runtime minikube)"
+  if [[ -n $rt && $rt != docker ]]; then
+    note "Your Minikube cluster uses the \"$rt\" runtime, so 'eval \$(minikube docker-env)' can't build into it."
+    if yes_no "Delete it and recreate it with the Docker runtime?" y; then
+      cmd 'minikube delete'
+    else
+      echo "Stopping: this exercise needs the Docker runtime."
+      exit 1
+    fi
+  fi
+  cmd "minikube start --container-runtime=docker $*"
+}
+
 # Refuses to clobber containers you might be using for something else.
 free_container_names() {
   local n existing=""
@@ -358,7 +384,7 @@ ex2() {
   begin 02-minikube-flask "Exercise 2 · Flask on Minikube with kubectl and YAML"
 
   section "Steps 1-4: start Minikube and build the image inside it"
-  cmd 'minikube start'
+  start_minikube_with_docker
   quiet kubectl delete -f flask-deployment-with-service.yaml --ignore-not-found
   cmd 'eval $(minikube docker-env)'
   cmd 'docker build -t flask-app .'
@@ -397,7 +423,7 @@ ex3() {
   if yes_no "Step 1 deletes your existing Minikube cluster to start fresh. Do it?" n; then
     cmd 'minikube stop; minikube delete'
   fi
-  cmd 'minikube start --nodes=1'
+  start_minikube_with_docker --nodes=1
   cmd 'kubectl get nodes'
   quiet kubectl delete -f flashsale-replicaset.yaml --ignore-not-found --wait
   quiet kubectl delete pod load --ignore-not-found
