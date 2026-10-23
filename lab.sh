@@ -118,7 +118,8 @@ screenshot_dir() {
 
 shot_hint() {
   if [[ "$(uname -s)" == Darwin ]]; then
-    echo "Cmd+Shift+4, then Space, then click the window"
+    echo "Cmd+Shift+4, then Space, then click the window. Don't click or drag the preview"
+    echo "        thumbnail; let it disappear (or turn it off: Cmd+Shift+5 → Options → Show Floating Thumbnail)."
   elif is_wsl; then
     echo "Win+Shift+S (Windows 11 auto-saves to Pictures\\Screenshots) or Win+PrtScn"
   else
@@ -134,10 +135,22 @@ shot() { # file description
   printf '\n%s📸 SCREENSHOT → screenshots/%s%s\n' "$BOLD$YELLOW" "$1" "$RESET"
   printf '   %s\n   How: %s\n' "$2" "$(shot_hint)"
   while true; do
-    ask "   Press Enter after taking it ([s] skip): "
+    ask "   Press Enter after taking it, or drag the screenshot here ([s] skip): "
     if [[ $REPLY == s ]]; then
       note "   skipped"
       return 0
+    fi
+    if [[ -n $REPLY ]]; then # a dragged/pasted path, possibly quoted or with escaped spaces
+      f="${REPLY%"${REPLY##*[![:space:]]}"}"
+      f="${f#\'}" f="${f%\'}" f="${f#\"}" f="${f%\"}"
+      f="${f//\\ / }"
+      if [[ -f $f ]]; then
+        cp "$f" "$dest"
+        say "   ✓ saved as screenshots/$1"
+        return 0
+      fi
+      note "   That file is gone (macOS deletes the preview's temporary copy). Take it again."
+      continue
     fi
     for i in 1 2 3 4 5 6 7 8; do # macOS writes the file a few seconds after the shot
       newest="" newest_t=0
